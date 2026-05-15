@@ -1,0 +1,37 @@
+name: Update DRC Horizon News
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # Toutes les heures pile
+  workflow_dispatch:        # Déclenchement manuel depuis GitHub
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install anthropic
+
+      - name: Generate fresh index.html
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python generate.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "DRC Horizon Bot"
+          git config user.email "bot@drc-horizon.com"
+          git add index.html
+          git diff --staged --quiet || git commit -m "🌅 Actualités RDC – $(date +'%d/%m/%Y %H:%M') UTC"
+          git push
