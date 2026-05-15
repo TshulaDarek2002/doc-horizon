@@ -2,7 +2,7 @@ name: Update DRC Horizon News
 
 on:
   schedule:
-    - cron: '0 * * * *'   # Toutes les heures pile
+    - cron: '0 8,20 * * *'   # Toutes les heures pile
   workflow_dispatch:        # Déclenchement manuel depuis GitHub
 
 jobs:
